@@ -1,0 +1,23 @@
+name: Package and sign
+
+on: [push]
+
+jobs:
+  build:
+    name: Build package
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build conda package
+      uses: prefix-dev/rattler-build-action@v0.2.14
+    # discover the newly created conda file in the output directory
+    # - name: Find conda package
+    #   id: find
+    #   run: |
+    #     echo "::set-output name=conda_file::$(find output/ -name '*.conda')"
+    - uses: actions/attest@v1
+      with:
+        subject-path: "**/*.conda"
+        predicate-type: 'https://example.com/predicate/v1'
+        predicate: '{}'
+    
