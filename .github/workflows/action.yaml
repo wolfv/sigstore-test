@@ -32,7 +32,6 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            # MANDATORY TO SET AUDIENCE TO prefix.dev
             const token = await core.getIDToken('prefix.dev')
             core.setOutput('token', token)
 
