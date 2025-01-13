@@ -21,7 +21,56 @@ jobs:
       #   run: |
       #     echo "::set-output name=conda_file::$(find output/ -name '*.conda')"
       - uses: actions/attest@v1
+        id: attest
         with:
           subject-path: "**/*.conda"
           predicate-type: "https://example.com/predicate/v1"
           predicate: "{}"
+
+      - name: Get JWT
+        id: get_token
+        uses: actions/github-script@v6
+        with:
+          script: |
+            # MANDATORY TO SET AUDIENCE TO prefix.dev
+            const token = await core.getIDToken('prefix.dev')
+            core.setOutput('token', token)
+
+      - name: Mint the API Key on prefix.dev
+        run: |
+          TOKEN="${{ steps.get_token.outputs.token }}"
+          RESPONSE=$(curl -s -X POST                      \
+              https://prefix.dev/api/oidc/mint_token \
+              -H "Content-Type: application/json"        \
+              --data "{\"token\": \"$TOKEN\"}")
+          # mask the response
+          echo "::add-mask::$RESPONSE"
+          echo "PREFIX_API_KEY=$RESPONSE" >> $GITHUB_ENV
+
+      - name: Use the API Key
+        run: |
+          channel="https://prefix.dev/api/v1/upload/test-channel"
+          file=$(find output/ -name '*.conda')
+          echo "Uploading $file to $channel"
+
+          name=$(basename "$file")
+          sha256=$(sha256sum "$file" | cut -d' ' -f1)
+          temp_file=$(mktemp)
+
+          # get the size of the attestation file
+          size=$(stat --printf="%s" ${{ steps.attest.outputs.bundle-path }})
+
+          # find the attestation and prepend it to the upload file
+          cat ${{ steps.attest.outputs.bundle-path }} > "$temp_file"
+          cat "$file" >> "$temp_file"
+
+          curl -v -X POST "$channel" \
+              -H "X-File-Name: $name" \
+              -H "X-File-SHA256: $sha256" \
+              -H "X-Sig-Bundle-Size: $size" \
+              -H "Authorization: Bearer $PREFIX_API_KEY" \
+              -H "Content-Type: application/octet-stream" \
+              -H "Content-Length: $(size)" \
+              --data-binary "@$temp_file" \
+              -s \
+              -w "Uploaded package %{filename_effective} with status %{http_code}\n"
