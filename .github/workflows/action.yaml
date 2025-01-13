@@ -70,7 +70,10 @@ jobs:
               -H "X-Sig-Bundle-Size: $sig_size" \
               -H "Authorization: Bearer $PREFIX_API_KEY" \
               -H "Content-Type: application/octet-stream" \
-              -H "Content-Length: $(size)" \
+              -H "Content-Length: $size" \
               --data-binary "@$temp_file" \
               -s \
               -w "Uploaded package %{filename_effective} with status %{http_code}\n"
+
+
+
