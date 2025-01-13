@@ -57,16 +57,17 @@ jobs:
           temp_file=$(mktemp)
 
           # get the size of the attestation file
-          size=$(stat --printf="%s" ${{ steps.attest.outputs.bundle-path }})
+          sig_size=$(stat --printf="%s" ${{ steps.attest.outputs.bundle-path }})
 
           # find the attestation and prepend it to the upload file
           cat ${{ steps.attest.outputs.bundle-path }} > "$temp_file"
           cat "$file" >> "$temp_file"
+          size=$(stat --printf="%s" "$temp_file")
 
           curl -v -X POST "$channel" \
               -H "X-File-Name: $name" \
               -H "X-File-SHA256: $sha256" \
-              -H "X-Sig-Bundle-Size: $size" \
+              -H "X-Sig-Bundle-Size: $sig_size" \
               -H "Authorization: Bearer $PREFIX_API_KEY" \
               -H "Content-Type: application/octet-stream" \
               -H "Content-Length: $(size)" \
