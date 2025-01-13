@@ -64,7 +64,7 @@ jobs:
           cat "$file" >> "$temp_file"
 
           # Calculate total size and add 1 for content length
-          size=$(( $(stat --printf="%s" "$temp_file") + 1 ))
+          size=$(stat --printf="%s" "$temp_file")
 
           curl -v -X POST "$channel" \
               -H "X-File-Name: $name" \
