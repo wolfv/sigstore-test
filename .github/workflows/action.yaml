@@ -62,7 +62,9 @@ jobs:
           # find the attestation and prepend it to the upload file
           cat ${{ steps.attest.outputs.bundle-path }} > "$temp_file"
           cat "$file" >> "$temp_file"
-          size=$(stat --printf="%s" "$temp_file")
+
+          # Calculate total size and add 1 for content length
+          size=$(( $(stat --printf="%s" "$temp_file") + 1 ))
 
           curl -v -X POST "$channel" \
               -H "X-File-Name: $name" \
