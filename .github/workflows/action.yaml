@@ -72,5 +72,3 @@ jobs:
               -H "Content-Type: application/octet-stream" \
               -H "Content-Length: $size" \
               --data-binary "@$temp_file"
-
-
