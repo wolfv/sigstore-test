@@ -1,4 +1,5 @@
 import os
+import glob
 from pathlib import Path
 import hashlib
  
@@ -7,7 +8,9 @@ import requests
 url = "https://preview-informed-mule.prefix.dev"
 channel = "{url}/api/v1/upload/test-channel"
 
-def upload_with_attestation(fn = Path("signed-package-1.0.0-hb0f4dca_0.conda")):
+def upload_with_attestation():
+    fn = Path(list(glob.glob("output/**/signed-package*.conda"))[0])
+
     token = os.environ['PREFIX_API_KEY']
     attestation = os.environ['BUNDLE_PATH']
     data = fn.read_bytes()
