@@ -6,7 +6,7 @@ import hashlib
 import requests
  
 url = "https://preview-informed-mule.prefix.dev"
-channel = "{url}/api/v1/upload/test-channel"
+channel = f"{url}/api/v1/upload/test-channel"
 
 def upload_with_attestation():
     fn = Path(list(glob.glob("output/**/signed-package*.conda"))[0])
