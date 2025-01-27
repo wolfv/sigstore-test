@@ -39,7 +39,7 @@ jobs:
         run: |
           TOKEN="${{ steps.get_token.outputs.token }}"
           RESPONSE=$(curl -s -X POST                      \
-              https://preview-informed-mule.prefix.dev/api/oidc/mint_token \
+              https://preview-lenient-marlin.prefix.dev/api/oidc/mint_token \
               -H "Content-Type: application/json"        \
               --data "{\"token\": \"$TOKEN\"}")
           # mask the response
