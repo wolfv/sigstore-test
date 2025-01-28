@@ -22,12 +22,6 @@ jobs:
         with:
           subject-path: "**/*.conda"
           predicate-type: "https://slsa.dev/provenance/v1"
-          predicate: |
-            {
-              "buildDefinition": {
-                "buildType": "https://rattler.build/recipe/v1.yaml"
-              }
-            }
 
       - name: Get JWT
         id: get_token
