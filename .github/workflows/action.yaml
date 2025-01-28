@@ -24,7 +24,7 @@ jobs:
         id: attest
         with:
           subject-path: "**/*.conda"
-          predicate-type: "https://example.com/predicate/v1"
+          predicate-type: "https://slsa.dev/spec/v1.0/provenance"
           predicate: "{}"
 
       - name: Get JWT
