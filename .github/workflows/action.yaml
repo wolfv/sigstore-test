@@ -21,7 +21,7 @@ jobs:
         id: attest
         with:
           subject-path: "**/*.conda"
-          predicate-type: "https://slsa.dev/provenance/v1"
+          predicate-type: "https://example.com/predicates/conda-package"
 
       - name: Get JWT
         id: get_token
@@ -35,7 +35,7 @@ jobs:
         run: |
           TOKEN="${{ steps.get_token.outputs.token }}"
           RESPONSE=$(curl -s -X POST                      \
-              https://preview-lenient-marlin.prefix.dev/api/oidc/mint_token \
+              https://beta.prefix.dev/api/oidc/mint_token \
               -H "Content-Type: application/json"        \
               --data "{\"token\": \"$TOKEN\"}")
           # mask the response

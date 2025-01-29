@@ -5,7 +5,7 @@ import hashlib
  
 import requests
  
-url = "https://preview-lenient-marlin.prefix.dev"
+url = "https://beta.prefix.dev"
 channel = f"{url}/api/v1/upload/test-channel"
 
 def upload_with_attestation():
