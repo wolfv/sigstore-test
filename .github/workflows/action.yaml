@@ -22,6 +22,7 @@ jobs:
         with:
           subject-path: "**/*.conda"
           predicate-type: "https://example.com/predicates/conda-package"
+          predicate: "{}"
 
       - name: Get JWT
         id: get_token
