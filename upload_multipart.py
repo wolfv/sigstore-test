@@ -6,7 +6,7 @@ import hashlib
 import requests
  
 url = "https://beta.prefix.dev"
-channel = f"{url}/api/v1/upload/test-channel"
+channel = f"{url}/api/v1/upload/wolf-channel"
 
 def upload_with_attestation():
     fn = Path(list(glob.glob("output/**/signed-package*.conda"))[0])
