@@ -31,8 +31,8 @@ jobs:
 
           # List extracted contents
           ls -la
-
-          mv rattler-build-x86_64-unknown-linux-musl rattler-build
+          tree 
+          mv rattler-build-x86_64-unknown-linux-musl/rattler-build rattler-build
           chmod +x rattler-build
 
       - name: Build the package with rattler-build
