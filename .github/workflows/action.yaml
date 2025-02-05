@@ -32,6 +32,9 @@ jobs:
           # List extracted contents
           ls -la
 
+          mv rattler-build-x86_64-unknown-linux-musl rattler-build
+          chmod +x rattler-build
+
       - name: Build the package with rattler-build
         run: |
           ./rattler-build build --recipe ./conda.recipe
