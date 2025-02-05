@@ -14,8 +14,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build conda package
-        uses: prefix-dev/rattler-build-action@v0.2.14
+      - name: Extract tar.gz
+        run: |
+          gh run download 13153430860 \
+            --repo prefix-dev/rattler-build \
+            --name rattler-build-x86_64-unknown-linux-musl.tar.gz
+
+          # List files to see what we downloaded
+          ls -la
+
+          # Extract the tar.gz file
+          # Assuming there's only one .tar.gz file
+          tar -xzf *.tar.gz
+
+          # List extracted contents
+          ls -la
+
+      - name: Build the package with rattler-build
+        run: |
+          ./rattler-build build --recipe ./conda.recipe
 
       - uses: actions/attest@v1
         id: attest
@@ -24,34 +41,37 @@ jobs:
           predicate-type: "https://example.com/predicates/conda-package"
           predicate: "{}"
 
-      - name: Get JWT
-        id: get_token
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const token = await core.getIDToken('prefix.dev')
-            core.setOutput('token', token)
+      # - name: Get JWT
+      #   id: get_token
+      #   uses: actions/github-script@v6
+      #   with:
+      #     script: |
+      #       const token = await core.getIDToken('prefix.dev')
+      #       core.setOutput('token', token)
 
-      - name: Mint the API Key on prefix.dev
+      # - name: Mint the API Key on prefix.dev
+      #   run: |
+      #     TOKEN="${{ steps.get_token.outputs.token }}"
+      #     RESPONSE=$(curl -s -X POST                      \
+      #         https://beta.prefix.dev/api/oidc/mint_token \
+      #         -H "Content-Type: application/json"        \
+      #         --data "{\"token\": \"$TOKEN\"}")
+      #     # mask the response
+      #     echo "::add-mask::$RESPONSE"
+      #     echo "PREFIX_API_KEY=$RESPONSE" >> $GITHUB_ENV
+
+      - name: Upload the package
         run: |
-          TOKEN="${{ steps.get_token.outputs.token }}"
-          RESPONSE=$(curl -s -X POST                      \
-              https://beta.prefix.dev/api/oidc/mint_token \
-              -H "Content-Type: application/json"        \
-              --data "{\"token\": \"$TOKEN\"}")
-          # mask the response
-          echo "::add-mask::$RESPONSE"
-          echo "PREFIX_API_KEY=$RESPONSE" >> $GITHUB_ENV
+          ./rattler-build upload prefix -c wolf-private-test **/*.conda --attestation ${{ steps.attest.outputs.attestation-path }}
+        # - uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.13'
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
+      # - name: install requests
+      #   run: |
+      #     pip install requests
 
-      - name: install requests
-        run: |
-          pip install requests
-
-      - name: Use the API Key
-        run: |
-          export BUNDLE_PATH=${{ steps.attest.outputs.bundle-path }}
-          python ./upload_multipart.py
+      # - name: Use the API Key
+      #   run: |
+      #     export BUNDLE_PATH=${{ steps.attest.outputs.bundle-path }}
+      #     python ./upload_multipart.py
