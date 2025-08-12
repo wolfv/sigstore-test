@@ -43,8 +43,8 @@ jobs:
         id: attest
         with:
           subject-path: "**/*.conda"
-          predicate-type: "https://example.com/predicates/conda-package"
-          predicate: "{}"
+          predicate-type: "https://schemas.conda.org/attestations-publish-1.schema.json"
+          predicate: "{\"targetChannel\": \"https://prefix.dev/wolf-channel\"}"
 
       - name: Upload the package
         run: |
