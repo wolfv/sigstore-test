@@ -14,30 +14,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Extract tar.gz
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Set up Rattler-build
         run: |
-          gh run download 13156250756 \
-            --repo prefix-dev/rattler-build \
-            --name rattler-build-x86_64-unknown-linux-musl.tar.gz
-
-          # List files to see what we downloaded
-          ls -la
-
-          # Extract the tar.gz file
-          # Assuming there's only one .tar.gz file
-          tar -xzf *.tar.gz
-
-          # List extracted contents
-          ls -la
-          tree 
-          mv rattler-build-x86_64-unknown-linux-musl/rattler-build rattler-build
+          curl -L https://github.com/prefix-dev/rattler-build/releases/download/v0.45.0/rattler-build-x86_64-unknown-linux-musl -o rattler-build
           chmod +x rattler-build
-
+          sudo mv rattler-build /usr/local/bin/rattler-build
       - name: Build the package with rattler-build
         run: |
-          ./rattler-build build --recipe ./conda.recipe
+          rattler-build build --recipe ./conda.recipe
           tree
       - uses: actions/attest@v1
         id: attest
