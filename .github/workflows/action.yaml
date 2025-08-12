@@ -28,7 +28,7 @@ jobs:
         with:
           subject-path: "**/*.conda"
           predicate-type: "https://schemas.conda.org/attestations-publish-1.schema.json"
-          predicate: "{\"targetChannel\": \"https://prefix.dev/wolf-channel\"}"
+          predicate: "{\"targetChannel\": \"https://prefix.dev/wolf-private-test\"}"
 
       - name: Upload the package
         run: |
