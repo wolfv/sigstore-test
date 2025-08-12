@@ -32,4 +32,4 @@ jobs:
 
       - name: Upload the package
         run: |
-          ./rattler-build upload prefix -c wolf-private-test ./output/**/*.conda --attestation ${{ steps.attest.outputs.bundle-path }}
+          rattler-build upload prefix -c wolf-private-test ./output/**/*.conda --attestation ${{ steps.attest.outputs.bundle-path }}
